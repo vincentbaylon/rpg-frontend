@@ -7,7 +7,6 @@ import warrior from '../Images/Warrior-Idle.png'
 import warriorRun from '../Images/Warrior-Run.png'
 import book from '../Images/Book.png'
 
-
 const divStyle = {
     width: window.innerWidth,
     height: window.innerHeight,
@@ -114,6 +113,7 @@ function Create({ setChar, char }) {
     
             const parsedBody = await res.json();
             setChar(parsedBody)
+            console.log(parsedBody)
             setCreated(true)
             alert('Click on the book to start your adventure!')
         }

@@ -1,14 +1,10 @@
 import { React, useState, useEffect } from 'react'
 import background from '../Images/Background.png'
-import towerOne from '../Images/Tower-One.png'
-import towerTwo from '../Images/Tower-Two.png'
-import towerThree from '../Images/Tower-Three.png'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import blacksmith from '../Images/Blacksmith.png'
 import warrior from '../Images/Warrior-Idle.png'
-import warriorDead from '../Images/Warrior-Dead.png'
-import Modal from './Modal'
+import ThanksModal from './ThanksModal'
 import knight from '../Images/Knight-Idle.png'
 
 const divStyle = {
@@ -103,30 +99,13 @@ const modalButtonDivStyle = {
     position: 'absolute',
 }
 
-function Home({ char, currentQuest, setCurrentQuest, setChar, armor, setArmor }) {
+function Thanks({ char }) {
     const [questing, setQuesting] = useState(false)
-    const [warriorImage, setWarriorImage] = useState(warrior)
-    const [troll, setTroll] = useState(false)
-    const [orc, setOrc] = useState(false)
     const history = useHistory()
 
     useEffect(() => {
-        console.log(char)
-        if (char.health === 0) {
-            setWarriorImage(warriorDead)
-        }
-        if (currentQuest === 3) {
-            setTroll(!troll)
-        }
-        if (currentQuest === 4) {
-            setTroll(!troll)
-            setOrc(!orc)
-        }
-    }, [currentQuest])
 
-    function handleClick() {
-        setQuesting(!questing)
-    }
+    }, [])
 
     return (
         <div style={divStyle}>
@@ -134,26 +113,19 @@ function Home({ char, currentQuest, setCurrentQuest, setChar, armor, setArmor })
                 <div style={talkButtonDivStyle}>
                     <div style={modalButtonDivStyle}>
 
-                        {questing ?
-                            <Modal setChar={setChar} char={char} currentQuest={currentQuest} setCurrentQuest={setCurrentQuest} setQuesting={setQuesting} questing={questing} />
-                            :
-                            <button onClick={handleClick} className='massive ui orange button' style={buttonStyle}>{`TALK TO ${(currentQuest > 1) ? 'LANTZ' : 'THE BLACKSMITH'}`}</button>
-                        }
+
+                        <ThanksModal char={char} />
+
                     </div>
-                </div>
-                <div style={towersDivStyle}>
-                    <img src={towerTwo} style={towerStyle} />
-                    <img src={towerOne} style={imageStyle} />
-                    <img src={towerThree} style={imageStyle} />
                 </div>
 
                 <div style={charactersDivStyle}>
-                    <img src={blacksmith} style={blacksmithStyle} onClick={handleClick} />
-                    <img src={armor ? knight : warriorImage} style={armor ? knightStyle : warriorStyle} />
+                    <img src={blacksmith} style={blacksmithStyle} />
+                    <img src={knight} style={knightStyle} />
                 </div>
             </div>
         </div>
     )
 }
 
-export default Home
+export default Thanks
