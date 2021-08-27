@@ -30,7 +30,7 @@ const contentDiv = {
 const fontStyle = {
     textShadow: '2px 2px lightgrey',
     textAlign: 'center',
-    fontSize: '125px',
+    fontSize: '150px',
     color: 'black',
 }
 
@@ -78,10 +78,10 @@ function Start() {
                     </div>
                     <div className='row' style={paddingMargin}>
                         <div>
-                            <img src={dragon} style={dragonStyle}/>
+                            <img src={dragon} style={dragonStyle} />
                         </div>
                         <div>
-                            <img src={tower} style={towerStyle}/>
+                            <img src={tower} style={towerStyle} />
                         </div>
                     </div>
                     <div className='row' style={paddingMargin}>

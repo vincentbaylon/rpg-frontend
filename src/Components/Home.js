@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import { React, useState, useEffect } from 'react'
 import background from '../Images/Background.png'
 import towerOne from '../Images/Tower-One.png'
 import towerTwo from '../Images/Tower-Two.png'
@@ -7,9 +7,8 @@ import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import blacksmith from '../Images/Blacksmith.png'
 import warrior from '../Images/Warrior-Idle.png'
+import warriorDead from '../Images/Warrior-Dead.png'
 import Modal from './Modal'
-
-const name = 'Xena'
 
 const divStyle = {
     width: window.innerWidth,
@@ -30,7 +29,8 @@ const contentDiv = {
     margin: 'auto',
     maxWidth: '100%',
     maxHeight: '100%',
-    overflow: 'auto'
+    overflow: 'auto',
+    zIndex: '100'
 }
 
 const fontStyle = {
@@ -41,21 +41,22 @@ const fontStyle = {
 }
 
 const imageStyle = {
-    width: '200px'
+    width: '275px'
 }
 
 const towerStyle = {
-    width: '200px',
+    width: '275px',
     transform: 'scaleX(-1)'
 }
 
 const blacksmithStyle = {
-    width: '150px'
+    width: '250px',
+    filter: 'drop-shadow(0px 0px 30px #fff)'
 }
 
 const warriorStyle = {
-    width: '400px',
-    transform: 'scaleX(-1)'
+    width: '650px',
+    transform: 'scaleX(-1)',
 }
 
 const buttonStyle = {
@@ -68,23 +69,26 @@ const towersDivStyle = {
     justifyContent: 'space-around',
     flexDirection: 'row',
     alignItems: 'flex-end',
-    top: '24%'
+    top: '12%',
+    zIndex: '1'
 }
 
 const charactersDivStyle = {
-    position: 'relative',
+    position: 'absolute',
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     flexDirection: 'row',
-    alignItems: 'flex-end',
-    top: '23%'
+    alignItems: 'center',
+    zIndex: '2',
+    left: '27%',
+    bottom: '10%'
 }
 
 const talkButtonDivStyle = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    top: '30%',
+    top: '25%',
     position: 'relative',
     zIndex: '100'
 }
@@ -93,14 +97,17 @@ const modalButtonDivStyle = {
     position: 'absolute'
 }
 
-const questOneSpeech = [
-    `Welcome ${name}`
-]
-
-function Home() {
+function Home({ char }) {
     const [questing, setQuesting] = useState(false)
-
+    const [warriorImage, setWarriorImage] = useState(warrior)
     const history = useHistory()
+
+    useEffect(() => {
+        console.log(char)
+        if (char.health === 0) {
+            setWarriorImage(warriorDead)
+        }
+    }, [])
 
     function handleClick() {
         setQuesting(!questing)
@@ -111,10 +118,10 @@ function Home() {
             <div style={contentDiv}>
                 <div style={talkButtonDivStyle}>
                     <div style={modalButtonDivStyle}>
-                        {questing ? 
-                            <Modal />
+                        {questing ?
+                            <Modal char={char} />
                             :
-                            <button onClick={handleClick} className='massive ui orange button' style={buttonStyle}>CLICK TO TALK TO THE BLACKSMITH</button>
+                            <button onClick={handleClick} className='massive ui orange button' style={buttonStyle}>TALK TO THE BLACKSMITH</button>
                         }
                     </div>
                 </div>
@@ -125,8 +132,8 @@ function Home() {
                 </div>
 
                 <div style={charactersDivStyle}>
-                    <img src={blacksmith} style={blacksmithStyle} />
-                    <img src={warrior} style={warriorStyle} />
+                    <img src={blacksmith} style={blacksmithStyle} onClick={handleClick} />
+                    <img src={warriorImage} style={warriorStyle} />
                 </div>
             </div>
         </div>

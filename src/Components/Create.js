@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import knight from '../Images/Knight-Idle.png'
 import warrior from '../Images/Warrior-Idle.png'
 import warriorRun from '../Images/Warrior-Run.png'
-import book from '../Images/Book-BG.png'
+import book from '../Images/Book.png'
 
 
 const divStyle = {
@@ -47,7 +47,7 @@ const buttonStyle = {
 
 const bookStyle = {
     width: '200px',
-    boxShadow: '0px 0px 30px #fff'
+    filter: 'drop-shadow(0px 0px 30px #fff)'
 }
 
 const bookButtonStyle = {
@@ -57,7 +57,7 @@ const bookButtonStyle = {
 
 const vertDivStyle = {
     display: 'flex',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
     flexDirection: 'column',
     alignItems: 'center',
     height: window.innerHeight
@@ -68,35 +68,76 @@ const paddingMargin = {
     margin: '20px'
 }
 
+const inputStyle = {
+    textTransform: 'capitalize'
+}
 
-function Create() {
+function Create({ setChar, char }) {
     const history = useHistory()
     const [name, setName] = useState('')
     const [created, setCreated] = useState(false)
+    const [editing, setEditing] = useState(false)
+
+    function capitalizeName(name) {
+        return name.replace(/\b(\w)/g, s => s.toUpperCase());
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/character`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-          },
-          body: JSON.stringify({
-            name
-          })
-        });
+
+        if (editing) {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/character/${char.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    name
+                })
+            });
     
-        const parsedBody = await res.json();
-        // setDogs([...dogs, parsedBody]);
-        // history.push('/dogs');
-        setCreated(true)
+            const parsedBody = await res.json();
+            setChar(parsedBody)
+            setEditing(false)
+        } else {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/character`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    name
+                })
+            });
+    
+            const parsedBody = await res.json();
+            setChar(parsedBody)
+            setCreated(true)
+            alert('Click on the book to start your adventure!')
+        }
     };
 
-    const handleChange = (e) => { setName(e.target.value) }
+    const handleChange = (e) => { 
+        let capitalName = capitalizeName(e.target.value)
+        setName(capitalName) 
+    }
 
     const handleClick = () => { history.push('/home') }
+
+    const handleEdit = () => { setEditing(!editing) }
+
+    const handleDelete = async () => {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/character/${char.id}`, {
+            method: 'DELETE',
+            headers: { Accept: 'application/json' },
+        });
+        const parsedBody = await res.json()
+
+        setCreated(!created)
+        setName('')
+    }
 
     return (
         <div style={divStyle}>
@@ -113,20 +154,45 @@ function Create() {
                             <img src={warriorTwo} style={warriorStyle}/>
                         </div> */}
                         <div>
-                            <img src={created ? warriorRun : warrior} style={warriorStyle}/>
+                            <img src={created ? warriorRun : warrior} style={warriorStyle} />
                         </div>
                     </div>
                     <div>
-                        {created ? 
-                            <>
-                            <div className='column'>
-                                <button onClick={handleClick} style={bookButtonStyle}><img style={bookStyle} src={book}/></button>
-                            </div>
-                          
-                            <div className='column'>
-                                <a class="huge ui pointing green basic label">Click on the book to start your adventure!</a>
-                            </div>
-                            </>
+                        {created ?
+                            (editing ?
+                                <form onSubmit={handleSubmit}>
+                                    <div className="massive ui input focus">
+                                        <input
+                                            placeholder="Name"
+                                            type="text"
+                                            name="name"
+                                            id="name"
+                                            value={name}
+                                            onChange={handleChange}
+                                            style={inputStyle}
+                                        />
+                                    </div>
+
+                                    <div className='row' style={paddingMargin}>
+                                        <button type='submit' className='massive ui orange button' style={buttonStyle}>{editing ? 'SAVE' : 'CREATE'}</button>
+                                    </div>
+                                </form>
+                                :
+                                <>
+                                    <div className='column'>
+                                        <button onClick={handleClick} style={bookButtonStyle}><img style={bookStyle} src={book} /></button>
+                                    </div>
+                                    <br></br>
+                                    <br></br>
+                                    <div className='column' >
+                                        <div className='row' >
+                                            <button onClick={handleEdit} className='huge ui blue left floated button' style={buttonStyle} >EDIT CHARACTER</button>
+
+                                            <button onClick={handleDelete} className='huge ui red right floated button' style={buttonStyle} >DELETE CHARACTER</button>
+                                        </div>
+                                    </div>
+                                </>
+                            )
                             :
                             <form onSubmit={handleSubmit}>
                                 <div className="massive ui input focus">
@@ -137,19 +203,19 @@ function Create() {
                                         id="name"
                                         value={name}
                                         onChange={handleChange}
+                                        style={inputStyle}
                                     />
                                 </div>
 
                                 <div className='row' style={paddingMargin}>
-                                    <button type='submit' className='massive ui orange button' style={buttonStyle}>CREATE</button>
+                                    <button type='submit' className='massive ui orange button' style={buttonStyle}>{editing ? 'SAVE' : 'CREATE'}</button>
                                 </div>
-                            </form> 
+                            </form>
                         }
                     </div>
-
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
