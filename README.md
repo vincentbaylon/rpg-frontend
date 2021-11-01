@@ -65,7 +65,7 @@ Backend: https://github.com/vincentbaylon/rpg-backend
 - Open terminal from editor or 'cd' to project directory and run:
   - bundle install
   - rake db:migrate db:seed
-  - bundlex exec rake server
+  - bundle exec rake server
 
 ## Project Status
 
