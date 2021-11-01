@@ -1,4 +1,4 @@
-<p align="center"><img src="src/Images/screenshot1.png" alt="logo" width="500px" margin="auto"></p>
+<p align="center"><img src="src/Images/screenshot1.png" alt="logo" width="750px" margin="auto"></p>
 
 # How To Train Your Dragon
 
