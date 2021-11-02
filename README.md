@@ -2,7 +2,7 @@
 
 # How To Train Your Dragon
 
-> How To Train Your Dragon is a guided RPG game
+> How To Train Your Dragon is a guided role-playing game
 
 ## Table of Contents
 
